@@ -81,7 +81,15 @@ const createUsernames = function(accs){
 };
 
 createUsernames(accounts);
-console.log(accounts);
+
+const calcDisplayBalance = function(movements){
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} EUR`;
+}
+
+calcDisplayBalance(account1.movements);
+
+
 
 // const eurToUsd = 1.1;
 
@@ -95,7 +103,7 @@ console.log(accounts);
 //   ['GBP', 'Pound sterling'],
 // ]);
 
-//const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 
 
