@@ -72,7 +72,6 @@ const displayMovements = function(movements) {
   });
 };
 
-displayMovements(account1.movements);
 
 const createUsernames = function(accs){
   accs.forEach(function(acc){
@@ -87,26 +86,53 @@ const calcDisplayBalance = function(movements){
   labelBalance.textContent = `${balance} €`;
 }
 
-calcDisplayBalance(account1.movements);
 
-const calcDisplaySummary = function(movements){
-  const incomes = movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
+const calcDisplaySummary = function(acc){
+  const incomes = acc.movements.filter(mov => mov > 0).reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}€`;
 
-  const out = movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
+  const out = acc.movements.filter(mov => mov < 0).reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(out)}€`;
 
-  const interest = movements.filter(mov => mov > 0)
-  .map(deposit => (deposit * 1.2) / 100)
+  const interest = acc.movements.filter(mov => mov > 0)
+  .map(deposit => (deposit * acc.interestRate) / 100)
   .filter((int, i, arr) => {
-    console.log(arr);
     return int >= 1;
   })
   .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interest}€`;
 }
 
-calcDisplaySummary(account1.movements);
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  
+  e.preventDefault();
+  
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  
+  console.log(currentAccount);
+
+  if(currentAccount?.pin === Number(inputLoginPin.value)){
+    
+    labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(' ')[0]}`;
+    containerApp.style.opacity = 100;
+
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    displayMovements(currentAccount.movements);
+
+    calcDisplayBalance(currentAccount.movements);
+
+    calcDisplaySummary(currentAccount);
+
+  }
+
+});
 
 
 
@@ -122,7 +148,7 @@ calcDisplaySummary(account1.movements);
 //   ['GBP', 'Pound sterling'],
 // ]);
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+//const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 
 
